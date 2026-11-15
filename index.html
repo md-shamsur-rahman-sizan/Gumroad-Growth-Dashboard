@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102b46">
+<title>Gumroad Growth Dashboard</title>
+<style>
+:root{--navy:#102b46;--blue:#2563eb;--ink:#182536;--muted:#687789;--line:#e5eaf0;--bg:#f4f7fb;--green:#15803d;--red:#dc2626;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width:1160px;margin:auto;padding:28px 20px 60px}
+header{background:linear-gradient(120deg,#102b46,#1c4c75);color:white;padding:28px;border-radius:22px;display:flex;justify-content:space-between;gap:20px;align-items:center;box-shadow:0 12px 30px #102b461c}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:800;color:#b9d5ef}h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:8px 0}header p{color:#d5e4f2;margin:8px 0 0;max-width:620px}.date{font-size:13px;color:#d5e4f2;text-align:right}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:28px;margin-top:5px}.stat small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.stack{display:grid;gap:18px}.panel h2{font-size:18px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+.progress{height:9px;background:#edf1f5;border-radius:20px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#22a06b);border-radius:20px;transition:width .2s}
+.goal{padding:14px 0;border-top:1px solid var(--line)}.goal:first-of-type{border-top:0}.goaltop{display:flex;justify-content:space-between;gap:12px;align-items:start}.goal strong{font-size:14px}.goal small{color:var(--muted)}.goal .progress{margin-top:10px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tab{border:1px solid var(--line);background:white;color:var(--muted);padding:9px 13px;border-radius:999px;font-weight:650;font-size:13px}.tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.tasklist{display:grid;gap:9px}.task{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);padding:12px;border-radius:12px;background:#fff}.task input{margin-top:4px;accent-color:var(--green);width:17px;height:17px}.task.done .taskname{text-decoration:line-through;color:#84909d}.taskbody{flex:1;min-width:0}.taskname{font-weight:650}.meta{font-size:11px;color:var(--muted);margin-top:3px}.tag{display:inline-block;background:#eef4ff;color:#315c9c;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:750;margin-left:5px}.delete{border:0;background:transparent;color:#9aa5b1;font-size:18px;padding:0 4px}.delete:hover{color:var(--red)}
+.formrow{display:flex;gap:8px;margin-top:13px}.formrow input,.formrow select,.field{min-width:0;width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink)}.formrow button,.primary{border:0;background:var(--blue);color:white;border-radius:10px;padding:10px 14px;font-weight:700;white-space:nowrap}.secondary{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 12px;font-weight:650}
+.routine{display:grid;gap:12px}.routineitem{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start}.time{font-size:12px;color:var(--blue);font-weight:800}.routineitem strong{font-size:13px}.routineitem p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.weekgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day{border:1px solid var(--line);border-radius:10px;padding:9px 5px;text-align:center;font-size:11px;color:var(--muted)}.day b{display:block;color:var(--ink);font-size:12px;margin-bottom:4px}.day.active{background:#edf5ff;border-color:#b8d2f5;color:#24579b}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:13px}
+.footer{margin-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}.notice{font-size:12px;color:var(--muted);margin-top:10px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}header{align-items:flex-start;flex-direction:column}.date{text-align:left}}
+@media(max-width:430px){.shell{padding:14px 12px 40px}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:23px}.panel{padding:14px}.formrow{flex-wrap:wrap}.formrow button{width:100%}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div><div class="eyebrow">Your independent digital business</div><h1>Gumroad Growth Dashboard</h1><p>Build a repeatable system for growing <b>Tiny Worlds, Big Adventures</b> — one small action at a time.</p></div>
+  <div class="date" id="today"></div>
+</header>
+<section class="stats">
+  <div class="stat"><span>Tasks completed</span><strong id="completedCount">0</strong><small id="taskTotal">of 0 tasks</small></div>
+  <div class="stat"><span>Overall task progress</span><strong id="overallPct">0%</strong><div class="progress"><i id="overallBar" style="width:0%"></i></div></div>
+  <div class="stat"><span>Active goals</span><strong id="goalCount">0</strong><small>Across your growth plan</small></div>
+  <div class="stat"><span>Days in launch plan</span><strong>30</strong><small>Review and adjust weekly</small></div>
+</section>
+
+<div class="layout">
+  <main class="stack">
+    <section class="panel">
+      <h2>Goals & milestones</h2><p class="sub">Edit the targets as your business develops.</p>
+      <div id="goals"></div>
+      <form class="formrow" id="goalForm"><input id="goalInput" placeholder="Add a new goal…" required maxlength="90"><button type="submit">Add goal</button></form>
+    </section>
+    <section class="panel">
+      <h2>Activity tracker</h2><p class="sub">Tick a task when it is completed. Your progress is saved in this browser.</p>
+      <div class="tabs">
+        <button class="tab active" data-filter="all">All tasks</button>
+        <button class="tab" data-filter="today">Daily routine</button>
+        <button class="tab" data-filter="week1">Week 1</button>
+        <button class="tab" data-filter="marketing">Marketing</button>
+        <button class="tab" data-filter="product">Product</button>
+        <button class="tab" data-filter="done">Completed</button>
+      </div>
+      <div class="tasklist" id="tasks"></div>
+      <form class="formrow" id="taskForm">
+        <input id="taskInput" placeholder="Add your next activity…" required maxlength="120">
+        <select id="taskCategory" aria-label="Task category"><option value="marketing">Marketing</option><option value="product">Product</option><option value="daily">Daily</option><option value="review">Review</option></select>
+        <button type="submit">Add task</button>
+      </form>
+      <p class="notice">Tip: add specific actions, such as “Create two Pinterest Pins”, rather than broad tasks like “Do marketing”.</p>
+    </section>
+    <section class="panel">
+      <h2>30-day launch roadmap</h2><p class="sub">A simple view of the four stages.</p>
+      <div class="goal"><div class="goaltop"><strong>Days 1–3 · Prepare</strong><small>Product and sales page</small></div><div class="meta">Review description, preview pages, PDF quality and product settings.</div></div>
+      <div class="goal"><div class="goaltop"><strong>Days 4–10 · Create</strong><small>Content library</small></div><div class="meta">Set up Pinterest boards, create 10 Pins and prepare short videos.</div></div>
+      <div class="goal"><div class="goaltop"><strong>Days 11–20 · Publish</strong><small>Traffic experiments</small></div><div class="meta">Publish consistently, test headlines and participate in relevant communities.</div></div>
+      <div class="goal"><div class="goaltop"><strong>Days 21–30 · Improve</strong><small>Measure and plan</small></div><div class="meta">Review clicks, product views and sales; decide what to repeat and what to improve.</div></div>
+    </section>
+  </main>
+  <aside class="stack">
+    <section class="panel">
+      <h2>Daily focus routine</h2><p class="sub">A 90-minute working plan.</p>
+      <div class="routine">
+        <div class="routineitem"><div class="time">35 min</div><div><strong>Pinterest content</strong><p>Create two original Pins using your book pages.</p></div></div>
+        <div class="routineitem"><div class="time">20 min</div><div><strong>Social media</strong><p>Prepare a Reel or Facebook post.</p></div></div>
+        <div class="routineitem"><div class="time">15 min</div><div><strong>Community</strong><p>Answer questions and engage helpfully.</p></div></div>
+        <div class="routineitem"><div class="time">20 min</div><div><strong>Research & analytics</strong><p>Review performance and research keywords.</p></div></div>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Weekly publishing rhythm</h2><p class="sub">A suggested content cadence.</p>
+      <div class="weekgrid">
+        <div class="day"><b>MON</b>Showcase</div><div class="day"><b>TUE</b>Challenge</div><div class="day"><b>WED</b>Coloring</div><div class="day"><b>THU</b>Benefits</div><div class="day"><b>FRI</b>Preview</div><div class="day"><b>SAT</b>Parent tip</div><div class="day"><b>SUN</b>Review</div>
+      </div>
+      <p class="notice">Aim for 2 fresh Pinterest Pins daily and 3 short videos weekly. Consistency matters more than volume.</p>
+    </section>
+    <section class="panel">
+      <h2>Weekly business review</h2><p class="sub">Enter your latest numbers once a week.</p>
+      <label class="meta" for="impressions">Pinterest impressions</label><input class="field" id="impressions" type="number" min="0" placeholder="e.g. 1200">
+      <label class="meta" for="clicks">Outbound clicks</label><input class="field" id="clicks" type="number" min="0" placeholder="e.g. 35" style="margin-top:7px">
+      <label class="meta" for="views">Gumroad product views</label><input class="field" id="views" type="number" min="0" placeholder="e.g. 28" style="margin-top:7px">
+      <label class="meta" for="sales">Sales</label><input class="field" id="sales" type="number" min="0" placeholder="e.g. 2" style="margin-top:7px">
+      <button class="primary" id="saveMetrics" style="margin-top:10px;width:100%">Save this week's metrics</button>
+      <p class="notice" id="metricsStatus">Metrics are stored locally in this browser.</p>
+    </section>
+    <section class="panel">
+      <h2>Quick links</h2>
+      <div class="tasklist">
+        <a href="https://shamsurrahman8.gumroad.com/l/tiny-worlds-big-adventures" target="_blank" rel="noopener">Your Gumroad product ↗</a>
+        <a href="https://www.pinterest.com/" target="_blank" rel="noopener">Pinterest ↗</a>
+        <a href="https://business.pinterest.com/" target="_blank" rel="noopener">Pinterest Business ↗</a>
+        <a href="https://www.canva.com/" target="_blank" rel="noopener">Canva ↗</a>
+      </div>
+    </section>
+  </aside>
+</div>
+<div class="footer">
+  <span>Gumroad Growth Dashboard · Your progress stays in this browser unless exported.</span>
+  <div class="actions"><button class="secondary" id="exportBtn">Export backup</button><button class="secondary" id="importBtn">Import backup</button><button class="secondary" id="resetBtn">Reset demo data</button><input type="file" id="importFile" accept="application/json" hidden></div>
+</div>
+</div>
+<script>
+const KEY='gumroad-growth-dashboard-v1';
+const seed={
+ goals:[
+  {id:1,title:'Make the first 10 genuine sales',current:0,target:10,unit:'sales'},
+  {id:2,title:'Publish 60 original Pinterest Pins',current:0,target:60,unit:'Pins'},
+  {id:3,title:'Create a free two-page sampler',current:0,target:1,unit:'sampler'},
+  {id:4,title:'Launch the second activity book',current:0,target:1,unit:'product'}
+ ],
+ tasks:[
+  ['Create a Pinterest Business account','marketing','Week 1'],['Set up five Pinterest boards','marketing','Week 1'],['Improve the Gumroad product description','product','Week 1'],['Prepare five real interior preview images','product','Week 1'],['Create the first 10 Pinterest Pins','marketing','Week 1'],['Create a free two-page coloring sampler','product','Week 1'],['Publish the first three Instagram Reels','marketing','Week 1'],
+  ['Publish two original Pinterest Pins','marketing','Daily'],['Prepare or publish one social post or Reel','marketing','Daily'],['Engage helpfully in one relevant community','marketing','Daily'],['Review keywords or analytics for 20 minutes','review','Daily']
+ ],
+ metrics:{impressions:'',clicks:'',views:'',sales:''}
+};
+let state=load();
+let filter='all';
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||structuredClone(seed)}catch(e){return structuredClone(seed)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+ const total=state.tasks.length,done=state.tasks.filter(t=>t.done).length,pct=total?Math.round(done/total*100):0;
+ document.getElementById('completedCount').textContent=done;document.getElementById('taskTotal').textContent=`of ${total} tasks`;document.getElementById('overallPct').textContent=pct+'%';document.getElementById('overallBar').style.width=pct+'%';document.getElementById('goalCount').textContent=state.goals.length;
+ document.getElementById('goals').innerHTML=state.goals.map(g=>{let p=Math.min(100,Math.round((g.current/g.target)*100));return `<div class="goal"><div class="goaltop"><div><strong>${esc(g.title)}</strong><br><small>${g.current} / ${g.target} ${esc(g.unit)}</small></div><div class="actions"><button class="secondary" onclick="changeGoal(${g.id},-1)">−</button><button class="secondary" onclick="changeGoal(${g.id},1)">+</button><button class="delete" title="Delete goal" onclick="deleteGoal(${g.id})">×</button></div></div><div class="progress"><i style="width:${p}%"></i></div></div>`}).join('')||'<div class="empty">No goals yet. Add your first goal above.</div>';
+ let list=state.tasks.filter(t=>filter==='all'||(filter==='today'&&t.category==='daily')||(filter==='week1'&&t.group==='Week 1')||(filter==='marketing'&&t.category==='marketing')||(filter==='product'&&t.category==='product')||(filter==='done'&&t.done));
+ document.getElementById('tasks').innerHTML=list.map(t=>`<div class="task ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id},this.checked)" aria-label="Mark task complete"><div class="taskbody"><div class="taskname">${esc(t.title)} <span class="tag">${esc(t.category)}</span></div><div class="meta">${esc(t.group||'Added by you')}</div></div><button class="delete" title="Delete task" onclick="deleteTask(${t.id})">×</button></div>`).join('')||'<div class="empty">No tasks in this view. Add a task or choose another filter.</div>';
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+ for(const k of ['impressions','clicks','views','sales'])document.getElementById(k).value=state.metrics[k]??'';
+}
+function toggleTask(id,v){let t=state.tasks.find(x=>x.id===id);if(t)t.done=v;save()}
+function deleteTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);save()}
+function changeGoal(id,d){let g=state.goals.find(x=>x.id===id);if(g)g.current=Math.max(0,g.current+d);save()}
+function deleteGoal(id){state.goals=state.goals.filter(x=>x.id!==id);save()}
+document.getElementById('taskForm').addEventListener('submit',e=>{e.preventDefault();let title=document.getElementById('taskInput').value.trim();if(!title)return;state.tasks.push({id:Date.now(),title,category:document.getElementById('taskCategory').value,group:'Added by you',done:false});e.target.reset();save()});
+document.getElementById('goalForm').addEventListener('submit',e=>{e.preventDefault();let title=document.getElementById('goalInput').value.trim();if(!title)return;state.goals.push({id:Date.now(),title,current:0,target:1,unit:'completed'});e.target.reset();save()});
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;render()}));
+document.getElementById('saveMetrics').addEventListener('click',()=>{for(const k of ['impressions','clicks','views','sales'])state.metrics[k]=document.getElementById(k).value;localStorage.setItem(KEY,JSON.stringify(state));document.getElementById('metricsStatus').textContent='Saved locally on this device.'});
+document.getElementById('exportBtn').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gumroad-growth-backup.json';a.click();URL.revokeObjectURL(a.href)});
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.tasks)||!Array.isArray(x.goals))throw Error();state=x;save();alert('Backup imported.')}catch(err){alert('That backup file is not valid.')}};r.readAsText(f)});
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('Reset all tasks, goals and metrics to the original starter data? This cannot be undone unless you exported a backup.')){state=structuredClone(seed);filter='all';save()}});
+document.getElementById('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+render();
+</script>
+</body>
+</html>
